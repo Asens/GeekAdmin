@@ -1,0 +1,14 @@
+server:
+  port: 80
+
+spring:
+  application:
+      name: GeekAdmin
+  profiles:
+      active: dev
+
+mybatis-plus:
+  mapper-locations: classpath*:com/geekutil/dao/mapper/*.xml
+
+
+

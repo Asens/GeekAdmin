@@ -1,7 +1,7 @@
-package com.geekutil.dao;
+package com.geekutil.modules.sys.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.geekutil.entity.User;
+import com.geekutil.modules.sys.entity.User;
 
 /**
  * @author Asens

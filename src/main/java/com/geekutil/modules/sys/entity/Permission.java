@@ -1,4 +1,4 @@
-package com.geekutil.entity;
+package com.geekutil.modules.sys.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -12,24 +12,20 @@ import java.util.Date;
 
 /**
  * @author Asens
- * create 2019-07-17 22:00
+ * create 2019-07-17 22:55
+ * 权限
  **/
 
-@EqualsAndHashCode(callSuper = true)
-@TableName("sys_user")
+@TableName("sys_permission")
 @Data
-public class User extends Model<User> {
-    @TableId(value="id", type= IdType.AUTO)
+@EqualsAndHashCode(callSuper = true)
+public class Permission extends Model<Permission> {
+    @TableId(type= IdType.AUTO)
     private Long id;
 
-    private String username;
+    private String name;
 
-    private String password;
+    private String code;
 
-    private String nickname;
-
-    private String avatar;
-
-    @TableField("create_date")
-    private Date createDate;
+    private Integer status;
 }

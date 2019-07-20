@@ -1,7 +1,7 @@
-package com.geekutil.service;
+package com.geekutil.modules.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.geekutil.entity.User;
+import com.geekutil.modules.sys.entity.User;
 
 /**
  * @author Asens

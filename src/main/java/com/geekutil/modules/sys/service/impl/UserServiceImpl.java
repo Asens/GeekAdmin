@@ -1,9 +1,9 @@
-package com.geekutil.service.impl;
+package com.geekutil.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.geekutil.dao.UserDao;
-import com.geekutil.entity.User;
-import com.geekutil.service.UserService;
+import com.geekutil.modules.sys.dao.UserDao;
+import com.geekutil.modules.sys.entity.User;
+import com.geekutil.modules.sys.service.UserService;
 import org.springframework.stereotype.Service;
 
 /**

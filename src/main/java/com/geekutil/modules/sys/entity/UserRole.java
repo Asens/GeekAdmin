@@ -11,7 +11,7 @@ import lombok.Data;
  * create 2019-07-17 22:49
  **/
 
-@TableName("sys_role_permission")
+@TableName("sys_user_role")
 @Data
 public class UserRole {
     @TableId(type= IdType.AUTO)

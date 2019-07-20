@@ -43,7 +43,6 @@ public class CodeGenerator {
     public static void main(String[] args) {
         // 代码生成器
         AutoGenerator generator = new AutoGenerator();
-        generator.setTemplateEngine(new FreemarkerTemplateEngine());
 
         // 全局配置
         GlobalConfig gc = new GlobalConfig();
@@ -59,7 +58,7 @@ public class CodeGenerator {
         dsc.setUrl("jdbc:mysql://localhost:3306/geek_admin?useUnicode=true&useSSL=false&" +
                 "characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=GMT%2B8");
         // dsc.setSchemaName("public");
-        dsc.setDriverName("com.mysql.jdbc.Driver");
+        dsc.setDriverName("com.mysql.cj.jdbc.Driver");
         dsc.setUsername("root");
         dsc.setPassword("root");
         generator.setDataSource(dsc);
@@ -67,7 +66,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(scanner("模块名"));
-        pc.setParent("com.geekutil");
+        pc.setParent("com.geekutil.modules");
         generator.setPackageInfo(pc);
 
         // 自定义配置
@@ -123,19 +122,50 @@ public class CodeGenerator {
         StrategyConfig strategy = new StrategyConfig();
         strategy.setNaming(NamingStrategy.underline_to_camel);
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
-        strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");
+        //strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");
         strategy.setEntityLombokModel(true);
         strategy.setRestControllerStyle(true);
         // 公共父类
         //strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");
         // 写于父类中的公共字段
-        strategy.setSuperEntityColumns("id");
-        strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
+        //strategy.setSuperEntityColumns("id");
+        strategy.setInclude(scanner("表名"));
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         generator.setStrategy(strategy);
         generator.setTemplateEngine(new FreemarkerTemplateEngine());
+
+
+        String[] tablePrefix = strategy.getTablePrefix();
+        String entityName = NamingStrategy.capitalFirst(processName(strategy.getInclude()[0], strategy.getNaming(), tablePrefix));
+        gc.setServiceName(entityName+ConstVal.SERVICE);
+        //gc.setServiceName(String.format(gc.getServiceName(), gc.getEntityName()));
         generator.execute();
     }
+
+    private static String processName(String name, NamingStrategy strategy, String[] prefix) {
+        boolean removePrefix = false;
+        if (prefix != null && prefix.length != 0) {
+            removePrefix = true;
+        }
+        String propertyName;
+        if (removePrefix) {
+            if (strategy == NamingStrategy.underline_to_camel) {
+                // 删除前缀、下划线转驼峰
+                propertyName = NamingStrategy.removePrefixAndCamel(name, prefix);
+            } else {
+                // 删除前缀
+                propertyName = NamingStrategy.removePrefix(name, prefix);
+            }
+        } else if (strategy == NamingStrategy.underline_to_camel) {
+            // 下划线转驼峰
+            propertyName = NamingStrategy.underlineToCamel(name);
+        } else {
+            // 不处理
+            propertyName = name;
+        }
+        return propertyName;
+    }
+
 
 }

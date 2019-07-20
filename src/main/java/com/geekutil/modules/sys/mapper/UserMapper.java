@@ -1,4 +1,4 @@
-package com.geekutil.modules.sys.dao;
+package com.geekutil.modules.sys.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.geekutil.modules.sys.entity.User;
@@ -8,5 +8,6 @@ import com.geekutil.modules.sys.entity.User;
  * create 2019-07-17 22:05
  **/
 
-public interface UserDao extends BaseMapper<User> {
+public interface UserMapper extends BaseMapper<User> {
+
 }

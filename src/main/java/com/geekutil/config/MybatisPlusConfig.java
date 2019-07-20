@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @Configuration
-@MapperScan("com.geekutil.modules")
+@MapperScan("com.geekutil.modules.*.mapper")
 public class MybatisPlusConfig {
     @Bean
     public PaginationInterceptor paginationInterceptor() {

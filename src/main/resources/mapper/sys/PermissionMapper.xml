@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.geekutil.modules.sys.mapper.PermissionMapper">
 
+    <select id="getListByRoleIds" resultType="com.geekutil.modules.sys.entity.Permission">
+        select * from sys_permission p left join sys_role_permission rp on p.id = rp.permission_id
+            where rp.role_id IN
+        <foreach collection="roleList" index="index" item="i" open="(" separator="," close=")">
+            #{i}
+        </foreach>
+    </select>
 </mapper>

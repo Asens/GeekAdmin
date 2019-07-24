@@ -28,4 +28,24 @@ public class Permission extends Model<Permission> {
     private String code;
 
     private Integer status;
+
+    @TableField("parent_code")
+    private String parentCode;
+
+    private String icon;
+
+    @TableField("view_page")
+    private String viewPage;
+
+    @TableField("sort_num")
+    private String sortNum;
+
+    @TableField("is_menu")
+    private Integer isMenu;
+
+    @TableField(exist = false)
+    private Object children;
+
+    @TableField(exist = false)
+    private Object key;
 }

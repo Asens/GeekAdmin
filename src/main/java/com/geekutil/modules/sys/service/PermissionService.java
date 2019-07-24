@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.entity.Role;
 
+import java.util.List;
+
 /**
  * @author Asens
  * create 2019-07-17 22:04
@@ -11,4 +13,5 @@ import com.geekutil.modules.sys.entity.Role;
 
 public interface PermissionService extends IService<Permission> {
 
+    List<Permission> getListByRoleIds(List<Integer> roleList);
 }

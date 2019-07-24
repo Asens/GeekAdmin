@@ -1,4 +1,4 @@
-package com.geekutil.modules.api.controller;
+package com.geekutil.modules.front.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.geekutil.modules.sys.entity.User;

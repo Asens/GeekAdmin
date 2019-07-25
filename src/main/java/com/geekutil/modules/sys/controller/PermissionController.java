@@ -1,6 +1,7 @@
 package com.geekutil.modules.sys.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.service.PermissionService;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -47,8 +49,43 @@ public class PermissionController {
 
     @PostMapping("/save")
     public Object save(Permission permission){
-        permissionService.save(permission);
+        permissionService.saveOrUpdate(permission);
         return Result.success();
+    }
+
+    @GetMapping("/info")
+    public Object info(String code){
+        Permission permission = permissionService.getOne(new QueryWrapper<Permission>()
+                .lambda().eq(Permission::getCode,code));
+        return Result.success("result",permission);
+    }
+
+    @GetMapping("/delete")
+    public Object delete(Long id){
+        List<Permission> list = permissionService.list();
+        List<Long> toDelete = new ArrayList<>();
+        Permission permission = list.stream().filter(t->Objects.equals(id,t.getId()))
+                .findFirst().get();
+        if(!hasChild(permission.getCode(),list)){
+            permissionService.removeById(permission.getId());
+            return Result.success();
+        }
+
+        toDelete.add(id);
+        addToDelete(permission,list,toDelete);
+        permissionService.removeByIds(toDelete);
+        return Result.success("result",permission);
+    }
+
+    private void addToDelete(Permission permission, List<Permission> list, List<Long> toDelete) {
+        List<Permission> children = getChildren(permission,list);
+        for(Permission p:children){
+            toDelete.add(p.getId());
+            if(!hasChild(p.getCode(),list)){
+                continue;
+            }
+            addToDelete(p,list,toDelete);
+        }
     }
 
     private void addChildren(Permission permission,List<Permission> list) {

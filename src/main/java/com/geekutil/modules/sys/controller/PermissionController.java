@@ -4,6 +4,7 @@ package com.geekutil.modules.sys.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.geekutil.Const;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
@@ -98,8 +99,8 @@ public class PermissionController {
 
     @GetMapping("/info")
     public Object info(String code){
-        Permission permission = permissionService.getOne(new QueryWrapper<Permission>()
-                .lambda().eq(Permission::getCode,code));
+        Permission permission = permissionService.lambdaQuery()
+                .eq(Permission::getCode,code).one();
         return Result.success("result",permission);
     }
 

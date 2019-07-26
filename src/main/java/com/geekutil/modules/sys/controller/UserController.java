@@ -2,6 +2,8 @@ package com.geekutil.modules.sys.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.geekutil.common.util.FrontUtils;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
@@ -44,6 +46,15 @@ public class UserController {
 
     @Resource
     private PermissionService permissionService;
+
+    @GetMapping("/list")
+    public Object list(Integer pageNo){
+        if(pageNo==null){
+            pageNo = 1;
+        }
+        IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo,10));
+        return Result.success("result",page);
+    }
 
     @PostMapping("/login")
     public Object login(@RequestBody Map<String,String> paramMap){

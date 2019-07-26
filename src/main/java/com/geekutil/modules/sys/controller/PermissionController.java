@@ -1,7 +1,10 @@
 package com.geekutil.modules.sys.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.geekutil.Const;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.service.PermissionService;
@@ -18,6 +21,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * <p>
@@ -37,14 +42,52 @@ public class PermissionController {
     public Object menuTree(){
         List<Permission> list = permissionService.list();
         List<Permission> rootList = list.stream().filter(t->StringUtils.isBlank(t.getParentCode()))
-                .collect(Collectors.toList());
+                .collect(toList());
         for(Permission permission:rootList){
             permission.setKey(permission.getId());
-            if(hasChild(permission.getCode(),list)){
-                addChildren(permission,list);
+            if(permissionService.hasChild(permission.getCode(),list)){
+                permissionService.addChildren(permission,list);
             }
         }
         return Result.success("result",rootList);
+    }
+
+    /**
+     * 找出有子节点且子节点全是功能按钮的
+     * 要依次按照顺序，从最顶级开始
+     *
+     * 有子菜单不允许创建子按钮
+     * 有子按钮不允许创建子菜单
+     *
+     * 有的从来都不是菜单本身的权限，而是操作数据的权限
+     * 只是我可以不让你看见而已
+     *
+     * 一个菜单本身的权限基本等同于查询的权限
+     */
+    @GetMapping("/menuList")
+    public Object menuList(){
+        List<Permission> list = permissionService.list();
+        List<Permission> baseMenu = permissionService.baseMenu(list);
+        JSONArray result = new JSONArray();
+        for(Permission permission:baseMenu){
+            JSONObject o = new JSONObject();
+            o.put("id",permission.getId());
+            o.put("name",permission.getName());
+            o.put("status",permission.getStatus());
+            o.put("deleted",0);
+            List<Permission> children = permissionService.getChildren(permission,list);
+            o.put("actions",children.stream().map(Permission::getCode).collect(toList()));
+            o.put("actionData",children.stream().map(t->{
+                JSONObject j = new JSONObject();
+                j.put("action",t.getCode());
+                j.put("defaultCheck",false);
+                j.put("describe",t.getName());
+                return j;
+            }).collect(toList()));
+            result.add(o);
+        }
+
+        return Result.success("result",result);
     }
 
     @PostMapping("/save")
@@ -66,56 +109,15 @@ public class PermissionController {
         List<Long> toDelete = new ArrayList<>();
         Permission permission = list.stream().filter(t->Objects.equals(id,t.getId()))
                 .findFirst().get();
-        if(!hasChild(permission.getCode(),list)){
+        if(!permissionService.hasChild(permission.getCode(),list)){
             permissionService.removeById(permission.getId());
             return Result.success();
         }
 
         toDelete.add(id);
-        addToDelete(permission,list,toDelete);
+        permissionService.addToDelete(permission,list,toDelete);
         permissionService.removeByIds(toDelete);
         return Result.success("result",permission);
-    }
-
-    private void addToDelete(Permission permission, List<Permission> list, List<Long> toDelete) {
-        List<Permission> children = getChildren(permission,list);
-        for(Permission p:children){
-            toDelete.add(p.getId());
-            if(!hasChild(p.getCode(),list)){
-                continue;
-            }
-            addToDelete(p,list,toDelete);
-        }
-    }
-
-    private void addChildren(Permission permission,List<Permission> list) {
-        List<Permission> children = getChildren(permission,list);
-        for(Permission c:children){
-            c.setKey(c.getId());
-            if(hasChild(c.getCode(),list)) {
-                addChildren(c, list);
-            }
-        }
-        permission.setChildren(children);
-    }
-
-    private List<Permission> getChildren(Permission permission,List<Permission> list) {
-        List<Permission> r = new ArrayList<>();
-        for(Permission p:list){
-            if(Objects.equals(permission.getCode(),p.getParentCode())){
-                r.add(p);
-            }
-        }
-        return r;
-    }
-
-    private boolean hasChild(String code,List<Permission> list){
-        for(Permission permission:list){
-            if(Objects.equals(code,permission.getParentCode())){
-                return true;
-            }
-        }
-        return false;
     }
 
 }

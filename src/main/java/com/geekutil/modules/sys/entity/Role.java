@@ -23,7 +23,7 @@ public class Role extends Model<Role> {
 
     private String name;
 
-    private String describe;
+    private String description;
 
     private Integer status;
 

@@ -6,14 +6,12 @@ import com.geekutil.Const;
 import com.geekutil.modules.sys.entity.User;
 import com.geekutil.modules.sys.mapper.UserMapper;
 import com.geekutil.modules.sys.service.UserService;
-import freemarker.template.SimpleHash;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -97,7 +95,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     private SecretKey key() {
         byte[] encodedKey = Base64.decodeBase64(
-                Const.secret);
+                Const.SECRET);
         return new SecretKeySpec(encodedKey, 0,
                 encodedKey.length, "AES");
     }

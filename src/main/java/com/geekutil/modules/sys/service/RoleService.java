@@ -3,6 +3,7 @@ package com.geekutil.modules.sys.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.geekutil.modules.sys.entity.Role;
 import com.geekutil.modules.sys.entity.User;
+import com.geekutil.modules.sys.entity.dto.RoleDTO;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ import java.util.List;
 public interface RoleService extends IService<Role> {
 
     List<Integer> getListByUser(Long userId);
+
+    void saveOrUpdate(RoleDTO roleDTO);
 }

@@ -34,8 +34,7 @@ public class Permission extends Model<Permission> {
 
     private String icon;
 
-    @TableField("view_page")
-    private String viewPage;
+    private String component;
 
     @TableField("sort_num")
     private String sortNum;
@@ -48,4 +47,5 @@ public class Permission extends Model<Permission> {
 
     @TableField(exist = false)
     private Object key;
+
 }

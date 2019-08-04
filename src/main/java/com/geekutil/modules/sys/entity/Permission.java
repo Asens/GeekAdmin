@@ -42,6 +42,9 @@ public class Permission extends Model<Permission> {
     @TableField("is_menu")
     private Integer isMenu;
 
+    @TableField("real_path")
+    private String realPath;
+
     @TableField(exist = false)
     private Object children;
 

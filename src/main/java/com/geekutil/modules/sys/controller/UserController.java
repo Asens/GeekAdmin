@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.geekutil.common.util.PageUtils.pageResult;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -61,7 +62,7 @@ public class UserController {
             pageNo = 1;
         }
         IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, 10));
-        return Result.success("result", page);
+        return Result.success("result", pageResult(page));
     }
 
     @PostMapping("/login")
@@ -89,7 +90,7 @@ public class UserController {
         JSONObject index = new JSONObject();
 
         index.put("title", "首页");
-        index.put("name", "index");
+        index.put("name", "首页");
         index.put("key", "");
         index.put("component", PAGE_BASIC_LAY_OUT);
         index.put("redirect", "/dashboard/workplace");
@@ -105,11 +106,14 @@ public class UserController {
         JSONArray array = new JSONArray();
         for (Permission permission : list) {
             JSONObject object = new JSONObject();
-            if (Objects.equals(permission.getIsMenu(), Const.DATABASE_INTEGER_NO)) {
+            if (Objects.equals(permission.getIsMenu(), Const.DATABASE_INTEGER_NO) &&
+            StringUtils.isBlank(permission.getRealPath())) {
                 continue;
             }
             object.put("name", permission.getName());
             object.put("key", permission.getCode());
+            object.put("isMenu", permission.getIsMenu());
+            object.put("realPath", permission.getRealPath());
             object.put("icon", permission.getIcon());
             object.put("component", permission.getComponent());
             if(StringUtils.isBlank(permission.getComponent())){

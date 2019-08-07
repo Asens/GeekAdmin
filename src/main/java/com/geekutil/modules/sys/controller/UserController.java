@@ -65,6 +65,11 @@ public class UserController {
         return Result.success("result", pageResult(page));
     }
 
+    @GetMapping("/edit")
+    public Object edit(Long id) {
+        return Result.success("result", userService.getById(id));
+    }
+
     @PostMapping("/login")
     public Object login(@RequestBody Map<String, String> paramMap) {
         String username = paramMap.get("username");

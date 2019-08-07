@@ -39,8 +39,12 @@ public class RoleController {
     @Resource
     private PermissionService permissionService;
 
+    /**
+     * 角色列表
+     * 角色中包含了对应的权限,用于反显
+     */
     @GetMapping("/list")
-    public Object menuTree(){
+    public Object list(){
         List<Role> list = roleService.list();
         JSONArray result = new JSONArray();
         for(Role role:list){
@@ -76,14 +80,18 @@ public class RoleController {
         return Result.success("result",result);
     }
 
-
+    /**
+     * 保存角色
+     */
     @PostMapping("/save")
     public Object save(RoleDTO roleDTO){
-        //roleService.saveOrUpdate(role);
         roleService.saveOrUpdate(roleDTO);
         return Result.success();
     }
 
+    /**
+     * 删除角色
+     */
     @GetMapping("/delete")
     public Object delete(Long id){
         return Result.success("result");

@@ -56,6 +56,9 @@ public class UserController {
     private final static String PAGE_ROUTE_VIEW = "RouteView";
     private final static String PAGE_VIEW = "PageView";
 
+    /**
+     * 用户列表
+     */
     @GetMapping("/list")
     public Object list(Integer pageNo) {
         if (pageNo == null) {
@@ -65,6 +68,9 @@ public class UserController {
         return Result.success("result", pageResult(page));
     }
 
+    /**
+     * 登录接口
+     */
     @PostMapping("/login")
     public Object login(@RequestBody Map<String, String> paramMap) {
         String username = paramMap.get("username");
@@ -81,6 +87,9 @@ public class UserController {
         return Result.error();
     }
 
+    /**
+     * 系统路由菜单,配合Vue动态路由
+     */
     @GetMapping("/menus")
     public Object menus() {
         Long userId = FrontUtils.getCurrentUserId();
@@ -102,6 +111,9 @@ public class UserController {
         return Result.success("result", menus);
     }
 
+    /**
+     * 递归构建路由菜单
+     */
     private Object menus(List<Permission> list,List<Permission> allList) {
         JSONArray array = new JSONArray();
         for (Permission permission : list) {
@@ -127,6 +139,9 @@ public class UserController {
         return array;
     }
 
+    /**
+     * 用户权限信息,包括用户基本信息,角色以及权限
+     */
     @GetMapping("/info")
     public Object info() {
         Long userId = FrontUtils.getCurrentUserId();

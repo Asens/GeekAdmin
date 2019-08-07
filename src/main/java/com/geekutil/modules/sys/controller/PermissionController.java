@@ -3,18 +3,18 @@ package com.geekutil.modules.sys.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.unbiz.fluentvalidator.ComplexResult;
+import com.baidu.unbiz.fluentvalidator.FluentValidator;
+import com.baidu.unbiz.fluentvalidator.ResultCollectors;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.geekutil.Const;
 import com.geekutil.common.util.Result;
+import com.geekutil.common.validate.NotEmptyValidator;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.service.PermissionService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -93,19 +93,26 @@ public class PermissionController {
 
     @PostMapping("/save")
     public Object save(Permission permission){
+        ComplexResult result = FluentValidator.checkAll()
+                .on(permission.getName(), new NotEmptyValidator("名称"))
+                .doValidate()
+                .result(ResultCollectors.toComplex());
+        if(!result.isSuccess()){
+            return Result.error(result.getErrors().toString());
+        }
         permissionService.saveOrUpdate(permission);
         return Result.success();
     }
 
     @GetMapping("/info")
-    public Object info(String code){
+    public Object info(@RequestParam("code") String code){
         Permission permission = permissionService.lambdaQuery()
                 .eq(Permission::getCode,code).one();
         return Result.success("result",permission);
     }
 
     @GetMapping("/delete")
-    public Object delete(Long id){
+    public Object delete(@RequestParam("id") Long id){
         List<Permission> list = permissionService.list();
         List<Long> toDelete = new ArrayList<>();
         Permission permission = list.stream().filter(t->Objects.equals(id,t.getId()))

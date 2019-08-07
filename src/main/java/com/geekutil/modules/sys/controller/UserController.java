@@ -12,6 +12,7 @@ import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.entity.Role;
 import com.geekutil.modules.sys.entity.User;
+import com.geekutil.modules.sys.entity.dto.UserDTO;
 import com.geekutil.modules.sys.entity.vo.PermissionVO;
 import com.geekutil.modules.sys.entity.vo.UserVo;
 import com.geekutil.modules.sys.service.PermissionService;
@@ -46,16 +47,6 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    @Resource
-    private RoleService roleService;
-
-    @Resource
-    private PermissionService permissionService;
-
-    private final static String PAGE_BASIC_LAY_OUT = "BasicLayout";
-    private final static String PAGE_ROUTE_VIEW = "RouteView";
-    private final static String PAGE_VIEW = "PageView";
-
     /**
      * 用户列表
      */
@@ -68,114 +59,24 @@ public class UserController {
         return Result.success("result", pageResult(page));
     }
 
-
     @GetMapping("/edit")
     public Object edit(Long id) {
         return Result.success("result", userService.getById(id));
     }
 
-    /**
-     * 登录接口
-     */
-    @PostMapping("/login")
-    public Object login(@RequestBody Map<String, String> paramMap) {
-        String username = paramMap.get("username");
-        String password = paramMap.get("password");
-        log.info("username : [{}], password:[{}]", username, password);
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            return Result.error();
-        }
-        User user = userService.findByUsername(username);
-        if (user != null && userService.checkPassword(user, password)) {
-            String token = userService.createToken(user.getId());
-            return Result.success("result", userVo(user, token));
-        }
-        return Result.error();
+    @PostMapping("/save")
+    public Object doAuth(UserDTO userDTO) {
+        userService.saveOrUpdateUser(userDTO);
+        return Result.success();
     }
 
-    /**
-     * 系统路由菜单,配合Vue动态路由
-     */
-    @GetMapping("/menus")
-    public Object menus() {
-        Long userId = FrontUtils.getCurrentUserId();
-        log.info("info userId:[{}]", userId);
-        List<Integer> roleList = roleService.getListByUser(userId);
-        List<Permission> permissionList = permissionService.getListByRoleIds(roleList);
-        JSONObject index = new JSONObject();
-
-        index.put("title", "首页");
-        index.put("name", "首页");
-        index.put("key", "");
-        index.put("component", PAGE_BASIC_LAY_OUT);
-        index.put("redirect", "/dashboard/workplace");
-        List<Permission> rootList = permissionList.stream().filter(t -> StringUtils.isBlank(t.getParentCode()))
-                .collect(toList());
-        index.put("children", menus(rootList,permissionList));
-        JSONArray menus = new JSONArray();
-        menus.add(index);
-        return Result.success("result", menus);
+    @GetMapping("/auth")
+    public Object auth(Long id) {
+        return Result.success("result", userService.getById(id));
     }
 
-    /**
-     * 递归构建路由菜单
-     */
-    private Object menus(List<Permission> list,List<Permission> allList) {
-        JSONArray array = new JSONArray();
-        for (Permission permission : list) {
-            JSONObject object = new JSONObject();
-            if (Objects.equals(permission.getIsMenu(), Const.DATABASE_INTEGER_NO) &&
-            StringUtils.isBlank(permission.getRealPath())) {
-                continue;
-            }
-            object.put("name", permission.getName());
-            object.put("key", permission.getCode());
-            object.put("isMenu", permission.getIsMenu());
-            object.put("realPath", permission.getRealPath());
-            object.put("icon", permission.getIcon());
-            object.put("component", permission.getComponent());
-            if(StringUtils.isBlank(permission.getComponent())){
-                object.put("component", PAGE_ROUTE_VIEW);
-            }
-            if (permissionService.hasChild(permission.getCode(), allList)) {
-                object.put("children", menus(permissionService.getChildren(permission,allList),allList));
-            }
-            array.add(object);
-        }
-        return array;
-    }
-
-    /**
-     * 用户权限信息,包括用户基本信息,角色以及权限
-     */
-    @GetMapping("/info")
-    public Object info() {
-        Long userId = FrontUtils.getCurrentUserId();
-        log.info("info userId:[{}]", userId);
-        User user = userService.getById(userId);
-        if (user == null) {
-            return Result.error();
-        }
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user, userVo, "password");
-        List<Integer> roleList = roleService.getListByUser(userId);
-
-        List<Permission> permissionList = permissionService.getListByRoleIds(roleList);
-        JSONObject role = new JSONObject();
-        role.put("permissions", permissionList.stream().map(t -> {
-            PermissionVO permissionVO = new PermissionVO();
-            permissionVO.setPermissionId(t.getCode());
-            permissionVO.setPermissionName(t.getName());
-            return permissionVO;
-        }).collect(toList()));
-        userVo.setRole(role);
-        return Result.success("result", userVo);
-    }
-
-    private Object userVo(User user, String token) {
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user, userVo, "password");
-        userVo.setToken(token);
-        return userVo;
+    @PostMapping("/doAuth")
+    public Object doAuth(Long id) {
+        return Result.success("result", userService.getById(id));
     }
 }

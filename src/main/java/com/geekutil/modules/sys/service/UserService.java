@@ -2,6 +2,7 @@ package com.geekutil.modules.sys.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.geekutil.modules.sys.entity.User;
+import com.geekutil.modules.sys.entity.dto.UserDTO;
 
 /**
  * @author Asens
@@ -28,4 +29,10 @@ public interface UserService extends IService<User> {
     User findByUsername(String username);
 
     boolean checkPassword(User user, String password);
+
+    /**
+     * 保存或更新,根据id
+     * @param userDTO 编辑的user信息
+     */
+    void saveOrUpdateUser(UserDTO userDTO);
 }

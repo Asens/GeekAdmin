@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.geekutil.Const;
 import com.geekutil.modules.sys.entity.User;
+import com.geekutil.modules.sys.entity.dto.UserDTO;
 import com.geekutil.modules.sys.mapper.UserMapper;
 import com.geekutil.modules.sys.service.UserService;
 import io.jsonwebtoken.Claims;
@@ -12,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -19,6 +21,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 import java.util.Objects;
+
+import static com.geekutil.Const.DATABASE_INTEGER_NO;
 
 /**
  * @author Asens
@@ -91,6 +95,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean checkPassword(User user, String password) {
         return Objects.equals(DigestUtils.md5DigestAsHex((password+Const.USER_SALT).getBytes()),
                 user.getPassword());
+    }
+
+    @Override
+    public void saveOrUpdateUser(UserDTO userDTO) {
+        if(userDTO.getId() == null){
+            User user = new User();
+            BeanUtils.copyProperties(userDTO,user);
+            user.setCreateDate(new Date());
+            user.setDeleted(DATABASE_INTEGER_NO);
+            user.setPassword(DigestUtils.md5DigestAsHex((userDTO.getPassword()
+                    +Const.USER_SALT).getBytes()));
+            save(user);
+            return;
+        }
+        User user = getById(userDTO.getId());
+        BeanUtils.copyProperties(userDTO,user,"id","password","username");
+        updateById(user);
     }
 
     private SecretKey key() {

@@ -10,7 +10,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.geekutil.Const;
 import com.geekutil.common.util.Result;
+import com.geekutil.common.validate.LengthValidator;
 import com.geekutil.common.validate.NotEmptyValidator;
+import com.geekutil.common.validate.ValidateUtils;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.service.PermissionService;
 import org.apache.commons.lang3.StringUtils;
@@ -98,11 +100,12 @@ public class PermissionController {
     @PostMapping("/save")
     public Object save(Permission permission){
         ComplexResult result = FluentValidator.checkAll()
-                .on(permission.getName(), new NotEmptyValidator("名称"))
+                .on(permission.getName(), new NotEmptyValidator("菜单名称"))
+                .on(permission.getName(), new LengthValidator(1,20,"菜单名称"))
                 .doValidate()
                 .result(ResultCollectors.toComplex());
         if(!result.isSuccess()){
-            return Result.error(result.getErrors().toString());
+            return Result.error(ValidateUtils.getErrorMessage(result.getErrors()));
         }
         permissionService.saveOrUpdate(permission);
         return Result.success();

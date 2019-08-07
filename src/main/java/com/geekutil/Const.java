@@ -19,7 +19,7 @@ public interface Const {
 
     String USER_ID_KEY = "userId";
     String EXPIRE_KEY = "expire";
-    String USER_SALT = "user_salt  ";
+    String USER_SALT = "user_salt";
     String SECRET = "1d1d23d2rt23f23f";
     int TOKEN_EXPIRY_TIME = 7 * 24 * 60 * 60;
 

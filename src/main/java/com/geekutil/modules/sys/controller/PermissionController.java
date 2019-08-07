@@ -74,6 +74,7 @@ public class PermissionController {
             JSONObject o = new JSONObject();
             o.put("id",permission.getId());
             o.put("name",permission.getName());
+            o.put("code",permission.getCode());
             o.put("status",permission.getStatus());
             o.put("deleted",0);
             List<Permission> children = permissionService.getChildren(permission,list);
@@ -125,7 +126,7 @@ public class PermissionController {
         toDelete.add(id);
         permissionService.addToDelete(permission,list,toDelete);
         permissionService.removeByIds(toDelete);
-        return Result.success("result",permission);
+        return Result.success("result");
     }
 
 }

@@ -34,8 +34,8 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     }
 
     @Override
-    public List<Permission> getListByRole(Long id) {
-        return null;
+    public List<Permission> getListByRole(@Param("id") Long id) {
+        return permissionMapper.getListByRoleId(id);
     }
 
     @Override
@@ -86,7 +86,10 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public List<Permission> baseMenu(List<Permission> list) {
         return list.stream().filter(t->{
-            if(!hasChild(t.getCode(),list)){
+//            if(!hasChild(t.getCode(),list)){
+//                return false;
+//            }
+            if(Objects.equals(t.getIsMenu(), Const.DATABASE_INTEGER_NO)){
                 return false;
             }
             List<Permission> children = getChildren(t,list);

@@ -7,14 +7,17 @@ import com.geekutil.Const;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.entity.Role;
+import com.geekutil.modules.sys.entity.dto.RoleDTO;
 import com.geekutil.modules.sys.service.PermissionService;
 import com.geekutil.modules.sys.service.RoleService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +49,7 @@ public class RoleController {
             List<Permission> baseMenu = permissionService.baseMenu(permissionList);
             o.put("id",role.getId());
             o.put("name",role.getName());
+            o.put("describe",role.getDescription());
             o.put("status",role.getStatus());
             o.put("deleted",0);
             JSONArray permissions = new JSONArray();
@@ -56,19 +60,32 @@ public class RoleController {
                 op.put("status",permission.getStatus());
                 op.put("deleted",0);
                 List<Permission> children = permissionService.getChildren(permission,permissionList);
-                op.put("actionData",children.stream().map(t->{
+                op.put("actionEntitySet",children.stream().map(t->{
                     JSONObject j = new JSONObject();
                     j.put("action",t.getCode());
                     j.put("describe",t.getName());
                     j.put("defaultCheck",false);
                     return j;
                 }).collect(toList()));
-                op.put("actions",children.stream().map(Permission::getCode).collect(toList()));
+                op.put("actions",op.get("actionEntitySet"));
                 permissions.add(op);
             }
             o.put("permissions",permissions);
             result.add(o);
         }
         return Result.success("result",result);
+    }
+
+
+    @PostMapping("/save")
+    public Object save(RoleDTO roleDTO){
+        //roleService.saveOrUpdate(role);
+        roleService.saveOrUpdate(roleDTO);
+        return Result.success();
+    }
+
+    @GetMapping("/delete")
+    public Object delete(Long id){
+        return Result.success("result");
     }
 }

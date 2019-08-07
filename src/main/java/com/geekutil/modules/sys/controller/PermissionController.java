@@ -3,18 +3,18 @@ package com.geekutil.modules.sys.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.unbiz.fluentvalidator.ComplexResult;
+import com.baidu.unbiz.fluentvalidator.FluentValidator;
+import com.baidu.unbiz.fluentvalidator.ResultCollectors;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.geekutil.Const;
 import com.geekutil.common.util.Result;
+import com.geekutil.common.validate.NotEmptyValidator;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.service.PermissionService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -23,12 +23,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.geekutil.Const.DATABASE_INTEGER_NO;
 import static java.util.stream.Collectors.toList;
 
 /**
- * <p>
- *  前端控制器
- * </p>
+ * 权限
+ * 权限包含菜单和功能按钮(对应的接口)
+ * 用户有菜单权限,可以看到对应的菜单
+ * 用户有功能按钮权限,用户可以看见对应的功能按钮,点击按钮有对应的接口权限
+ * 因此部分接口和函数会以menu命名
  *
  * @author Asens
  * @since 2019-07-20
@@ -39,21 +42,18 @@ public class PermissionController {
     @Resource
     private PermissionService permissionService;
 
+    /**
+     * 权限树形表格
+     */
     @GetMapping("/menuTree")
     public Object menuTree(){
-        List<Permission> list = permissionService.list();
-        List<Permission> rootList = list.stream().filter(t->StringUtils.isBlank(t.getParentCode()))
-                .collect(toList());
-        for(Permission permission:rootList){
-            permission.setKey(permission.getId());
-            if(permissionService.hasChild(permission.getCode(),list)){
-                permissionService.addChildren(permission,list);
-            }
-        }
-        return Result.success("result",rootList);
+        List<Permission> result = permissionService.menuTree();
+        return Result.success("result",result);
     }
 
     /**
+     * 角色授权时的权限列表,是所有有视图的菜单的集合
+     *
      * 找出有子节点且子节点全是功能按钮的
      * 要依次按照顺序，从最顶级开始
      *
@@ -76,7 +76,7 @@ public class PermissionController {
             o.put("name",permission.getName());
             o.put("code",permission.getCode());
             o.put("status",permission.getStatus());
-            o.put("deleted",0);
+            o.put("deleted",DATABASE_INTEGER_NO);
             List<Permission> children = permissionService.getChildren(permission,list);
             o.put("actions",children.stream().map(Permission::getCode).collect(toList()));
             o.put("actionData",children.stream().map(t->{
@@ -92,33 +92,39 @@ public class PermissionController {
         return Result.success("result",result);
     }
 
+    /**
+     * 保存权限
+     */
     @PostMapping("/save")
     public Object save(Permission permission){
+        ComplexResult result = FluentValidator.checkAll()
+                .on(permission.getName(), new NotEmptyValidator("名称"))
+                .doValidate()
+                .result(ResultCollectors.toComplex());
+        if(!result.isSuccess()){
+            return Result.error(result.getErrors().toString());
+        }
         permissionService.saveOrUpdate(permission);
         return Result.success();
     }
 
+    /**
+     * 权限基本信息
+     */
     @GetMapping("/info")
-    public Object info(String code){
+    public Object info(@RequestParam("code") String code){
         Permission permission = permissionService.lambdaQuery()
                 .eq(Permission::getCode,code).one();
         return Result.success("result",permission);
     }
 
+    /**
+     * 删除权限
+     * 删除权限要删除其所有的子权限
+     */
     @GetMapping("/delete")
-    public Object delete(Long id){
-        List<Permission> list = permissionService.list();
-        List<Long> toDelete = new ArrayList<>();
-        Permission permission = list.stream().filter(t->Objects.equals(id,t.getId()))
-                .findFirst().get();
-        if(!permissionService.hasChild(permission.getCode(),list)){
-            permissionService.removeById(permission.getId());
-            return Result.success();
-        }
-
-        toDelete.add(id);
-        permissionService.addToDelete(permission,list,toDelete);
-        permissionService.removeByIds(toDelete);
+    public Object delete(@RequestParam("id") Long id){
+        permissionService.delete(id);
         return Result.success("result");
     }
 

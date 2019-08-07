@@ -1,17 +1,21 @@
 package com.geekutil.modules.sys.service.impl;
 
 import com.geekutil.Const;
+import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.mapper.PermissionMapper;
 import com.geekutil.modules.sys.service.PermissionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 
 import static java.util.stream.Collectors.toList;
 
@@ -38,8 +42,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         return permissionMapper.getListByRoleId(id);
     }
 
-    @Override
-    public void addToDelete(Permission permission, List<Permission> list, List<Long> toDelete) {
+    private void addToDelete(Permission permission, List<Permission> list, List<Long> toDelete) {
         List<Permission> children = getChildren(permission,list);
         for(Permission p:children){
             toDelete.add(p.getId());
@@ -100,5 +103,38 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
             }
             return true;
         }).collect(toList());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Long id) {
+        List<Permission> list = list();
+        List<Long> toDelete = new ArrayList<>();
+        Permission permission = list.stream().filter(t->Objects.equals(id,t.getId()))
+                .findFirst().get();
+        if(!hasChild(permission.getCode(),list)){
+            removeById(permission.getId());
+            return;
+        }
+
+        toDelete.add(id);
+        addToDelete(permission,list,toDelete);
+        removeByIds(toDelete);
+
+        //TODO 删除和角色的关联关系
+    }
+
+    @Override
+    public List<Permission> menuTree() {
+        List<Permission> list = list();
+        List<Permission> rootList = list.stream().filter(t-> StringUtils.isBlank(t.getParentCode()))
+                .collect(toList());
+        for(Permission permission:rootList){
+            permission.setKey(permission.getId());
+            if(hasChild(permission.getCode(),list)){
+                addChildren(permission,list);
+            }
+        }
+        return rootList;
     }
 }

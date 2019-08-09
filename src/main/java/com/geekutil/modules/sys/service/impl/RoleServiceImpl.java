@@ -89,6 +89,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         rolePermissionService.saveBatch(rolePermissionList);
     }
 
+    @Override
+    public void deleteRole(Long id) {
+        //TODO 删除角色
+    }
+
     private List<String> getParentsCodes(Permission p, List<Permission> list) {
         List<String> result = new ArrayList<>();
         do{

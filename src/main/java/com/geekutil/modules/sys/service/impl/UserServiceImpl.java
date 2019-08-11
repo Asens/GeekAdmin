@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.geekutil.Const;
 import com.geekutil.modules.sys.entity.User;
+import com.geekutil.modules.sys.entity.UserRole;
 import com.geekutil.modules.sys.entity.dto.UserDTO;
 import com.geekutil.modules.sys.mapper.UserMapper;
+import com.geekutil.modules.sys.service.UserRoleService;
 import com.geekutil.modules.sys.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -15,11 +17,14 @@ import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-
+import javax.annotation.Resource;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.geekutil.Const.DATABASE_INTEGER_NO;
@@ -31,19 +36,8 @@ import static com.geekutil.Const.DATABASE_INTEGER_NO;
 @Service
 @Log4j2
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
-
-    @Override
-    public Long checkUser(String username, String password) {
-        User user= findByUsername(username);
-        if (user==null) {
-            return null;
-        }
-        if (Objects.equals(DigestUtils.md5DigestAsHex((password+Const.USER_SALT).getBytes())
-                ,user.getPassword())) {
-            return user.getId();
-        }
-        return null;
-    }
+    @Resource
+    private UserRoleService userRoleService;
 
     @Override
     public String createToken(Long userId) {
@@ -112,6 +106,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = getById(userDTO.getId());
         BeanUtils.copyProperties(userDTO,user,"id","password","username");
         updateById(user);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void doAuth(Long id, Long[] roles) {
+        userRoleService.remove(new QueryWrapper<UserRole>().lambda()
+                .eq(UserRole::getUserId,id));
+
+        List<UserRole> userRoleList = new ArrayList<>();
+        for(Long roleId : roles){
+            UserRole userRole = new UserRole();
+            userRole.setUserId(id);
+            userRole.setRoleId(roleId);
+            userRoleList.add(userRole);
+        }
+
+        userRoleService.saveBatch(userRoleList);
     }
 
     private SecretKey key() {

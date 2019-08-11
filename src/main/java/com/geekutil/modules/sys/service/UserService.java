@@ -12,22 +12,33 @@ import com.geekutil.modules.sys.entity.dto.UserDTO;
 public interface UserService extends IService<User> {
 
     /**
-     * 验证账号密码是否正确(验证成功返回用户id,验证失败返回null)
-     */
-    Long checkUser(String username, String password);
-
-    /**
      * 创建授权令牌
+     * @param userId 用户id
+     * @return 创建的token
      */
     String createToken(Long userId);
 
+
     /**
      * 通过token获取登录用户
+     * @param token token
+     * @return 用户id
      */
     Long getUserIdByToken(String token);
 
+    /**
+     * 查找用户
+     * @param username 用户名
+     * @return 用户
+     */
     User findByUsername(String username);
 
+    /**
+     * 检查用户名密码
+     * @param user 用户
+     * @param password 输入密码
+     * @return 正确返回true
+     */
     boolean checkPassword(User user, String password);
 
     /**
@@ -35,4 +46,12 @@ public interface UserService extends IService<User> {
      * @param userDTO 编辑的user信息
      */
     void saveOrUpdateUser(UserDTO userDTO);
+
+
+    /**
+     * 授予角色
+     * @param id 用户id
+     * @param roles 角色id集合
+     */
+    void doAuth(Long id, Long[] roles);
 }

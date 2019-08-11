@@ -10,13 +10,10 @@ import com.geekutil.modules.sys.entity.Role;
 import com.geekutil.modules.sys.entity.dto.RoleDTO;
 import com.geekutil.modules.sys.service.PermissionService;
 import com.geekutil.modules.sys.service.RoleService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -84,7 +81,7 @@ public class RoleController {
      * 保存角色
      */
     @PostMapping("/save")
-    public Object save(RoleDTO roleDTO){
+    public Object save(@Valid RoleDTO roleDTO){
         roleService.saveOrUpdate(roleDTO);
         return Result.success();
     }
@@ -93,7 +90,8 @@ public class RoleController {
      * 删除角色
      */
     @GetMapping("/delete")
-    public Object delete(Long id){
+    public Object delete(@RequestParam Long id){
+        roleService.deleteRole(id);
         return Result.success("result");
     }
 }

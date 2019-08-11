@@ -51,6 +51,7 @@ public class RoleController {
             o.put("id",role.getId());
             o.put("name",role.getName());
             o.put("describe",role.getDescription());
+            o.put("code",role.getCode());
             o.put("status",role.getStatus());
             o.put("deleted",0);
             JSONArray permissions = new JSONArray();

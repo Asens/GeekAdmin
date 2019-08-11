@@ -33,7 +33,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     private PermissionMapper permissionMapper;
 
     @Override
-    public List<Permission> getListByRoleIds(@Param("roleList") List<Integer> roleList) {
+    public List<Permission> getListByRoleIds(@Param("roleList") List<Long> roleList) {
         return permissionMapper.getListByRoleIds(roleList);
     }
 

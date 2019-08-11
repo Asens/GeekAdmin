@@ -23,6 +23,9 @@ public class RoleDTO {
     @Length(max = 100,message = "角色描述最大长度100")
     private String description;
 
+    @NotEmpty(message = "角色编码不能为空")
+    private String code;
+
     @NotNull(message = "状态不能为空")
     private Integer status;
 

@@ -5,4 +5,8 @@
     <select id="getListByUser" resultType="java.lang.Integer">
         select s.id from sys_role s left join sys_user_role ur on s.id = ur.role_id where ur.user_id = #{userId}
     </select>
+
+    <select id="getRoleListByUser" resultType="com.geekutil.modules.sys.entity.Role">
+        select s.* from sys_role s left join sys_user_role ur on s.id = ur.role_id where ur.user_id = #{userId}
+    </select>
 </mapper>

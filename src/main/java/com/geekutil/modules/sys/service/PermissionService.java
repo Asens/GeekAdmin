@@ -20,7 +20,7 @@ public interface PermissionService extends IService<Permission> {
      * @param roleList 角色集合
      * @return 角色集合对应的权限集合
      */
-    List<Permission> getListByRoleIds(List<Integer> roleList);
+    List<Permission> getListByRoleIds(List<Long> roleList);
 
     /**
      * 获取一个角色的所有权限

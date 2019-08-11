@@ -70,7 +70,7 @@ public class AuthController {
     public Object menus() {
         Long userId = FrontUtils.getCurrentUserId();
         log.info("info userId:[{}]", userId);
-        List<Integer> roleList = roleService.getListByUser(userId);
+        List<Long> roleList = roleService.getListByUser(userId);
         List<Permission> permissionList = permissionService.getListByRoleIds(roleList);
         JSONObject index = new JSONObject();
 
@@ -128,7 +128,7 @@ public class AuthController {
         }
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(user, userVo, "password");
-        List<Integer> roleList = roleService.getListByUser(userId);
+        List<Long> roleList = roleService.getListByUser(userId);
 
         List<Permission> permissionList = permissionService.getListByRoleIds(roleList);
         JSONObject role = new JSONObject();

@@ -39,8 +39,13 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     private RolePermissionService rolePermissionService;
 
     @Override
-    public List<Integer> getListByUser(Long userId) {
+    public List<Long> getListByUser(Long userId) {
         return roleMapper.getListByUser(userId);
+    }
+
+    @Override
+    public List<Role> getRoleListByUser(Long userId) {
+        return roleMapper.getRoleListByUser(userId);
     }
 
     @Override
@@ -113,7 +118,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         Role role = getById(roleDTO.getId());
         role.setName(roleDTO.getName());
         role.setDescription(roleDTO.getDescription());
-        role.setStatus(role.getStatus());
+        role.setStatus(roleDTO.getStatus());
+        role.setCode(roleDTO.getCode());
         updateById(role);
         return role;
     }
@@ -123,7 +129,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         role.setName(roleDTO.getName());
         role.setDescription(roleDTO.getDescription());
         role.setCreateDate(new Date());
-        role.setStatus(role.getStatus());
+        role.setStatus(roleDTO.getStatus());
+        role.setCode(roleDTO.getCode());
         save(role);
         return role;
     }

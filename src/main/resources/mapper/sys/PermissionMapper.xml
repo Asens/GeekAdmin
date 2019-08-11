@@ -15,4 +15,5 @@
         select * from sys_permission p left join sys_role_permission rp on p.id = rp.permission_id
         where rp.role_id = #{id}
     </select>
+
 </mapper>

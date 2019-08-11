@@ -1,30 +1,28 @@
 package com.geekutil.modules.sys.controller;
 
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baidu.unbiz.fluentvalidator.ComplexResult;
+import com.baidu.unbiz.fluentvalidator.FluentValidator;
+import com.baidu.unbiz.fluentvalidator.ResultCollectors;
+import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.geekutil.Const;
-import com.geekutil.common.permission.Auth;
-import com.geekutil.common.util.FrontUtils;
+import com.geekutil.common.auth.Auth;
 import com.geekutil.common.util.Result;
-import com.geekutil.modules.sys.entity.Permission;
+import com.geekutil.common.validate.ValidateUtils;
+import com.geekutil.common.validate.group.AddGroup;
+import com.geekutil.common.validate.group.UpdateGroup;
 import com.geekutil.modules.sys.entity.Role;
 import com.geekutil.modules.sys.entity.User;
 import com.geekutil.modules.sys.entity.UserRole;
 import com.geekutil.modules.sys.entity.dto.UserDTO;
-import com.geekutil.modules.sys.entity.vo.PermissionVO;
-import com.geekutil.modules.sys.entity.vo.UserVo;
-import com.geekutil.modules.sys.service.PermissionService;
 import com.geekutil.modules.sys.service.RoleService;
 import com.geekutil.modules.sys.service.UserRoleService;
 import com.geekutil.modules.sys.service.UserService;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,7 +30,7 @@ import javax.validation.Valid;
 import java.util.*;
 
 import static com.geekutil.common.util.PageUtils.pageResult;
-import static java.util.stream.Collectors.toList;
+import static com.geekutil.common.validate.ValidateUtils.validator;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -57,7 +55,7 @@ public class UserController {
     /**
      * 用户列表
      */
-    @Auth(value = "system.menu.list",roles = "")
+    @Auth(value = "system.menu.list")
     @GetMapping("/list")
     public Object list(@RequestParam(required = false , defaultValue = "1") Integer pageNo) {
         IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, 10));
@@ -76,7 +74,16 @@ public class UserController {
      * 保存用户
      */
     @PostMapping("/save")
-    public Object doAuth(@Valid UserDTO userDTO) {
+    public Object doAuth(UserDTO userDTO) {
+        ComplexResult result = FluentValidator.checkAll(new Class<?>[]
+                {userDTO.getId()==null?AddGroup.class:UpdateGroup.class})
+                .failOver()
+                .on(userDTO, new HibernateSupportedValidator<UserDTO>().setHiberanteValidator(validator()))
+                .doValidate()
+                .result(ResultCollectors.toComplex());
+        if(!result.isSuccess()){
+            return Result.error(ValidateUtils.getErrorMessage(result.getErrors()));
+        }
         userService.saveOrUpdateUser(userDTO);
         return Result.success();
     }

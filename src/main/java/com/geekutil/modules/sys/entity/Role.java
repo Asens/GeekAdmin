@@ -25,6 +25,8 @@ public class Role extends Model<Role> {
 
     private String description;
 
+    private String code;
+
     private Integer status;
 
     @TableField("create_date")

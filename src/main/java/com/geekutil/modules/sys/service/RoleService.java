@@ -19,7 +19,14 @@ public interface RoleService extends IService<Role> {
      * @param userId 用户id
      * @return 用户的角色id列表
      */
-    List<Integer> getListByUser(Long userId);
+    List<Long> getListByUser(Long userId);
+
+    /**
+     * 获取用户的角色列表
+     * @param userId 用户id
+     * @return 用户的角色列表
+     */
+    List<Role> getRoleListByUser(Long userId);
 
     /**
      * 有id时更新,没id保存

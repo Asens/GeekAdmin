@@ -1,4 +1,4 @@
-package com.geekutil.common.permission;
+package com.geekutil.common.auth;
 
 import java.lang.annotation.*;
 

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.geekutil.Const;
+import com.geekutil.common.permission.Auth;
 import com.geekutil.common.util.FrontUtils;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
@@ -50,6 +51,7 @@ public class UserController {
     /**
      * 用户列表
      */
+    @Auth(value = "system.menu.list",roles = "")
     @GetMapping("/list")
     public Object list(Integer pageNo) {
         if (pageNo == null) {

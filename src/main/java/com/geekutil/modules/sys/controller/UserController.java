@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.geekutil.common.auth.Auth;
 import com.geekutil.common.util.Result;
+import com.geekutil.common.validate.UniqueUsernameValidator;
 import com.geekutil.common.validate.ValidateUtils;
 import com.geekutil.common.validate.group.AddGroup;
 import com.geekutil.common.validate.group.UpdateGroup;
@@ -80,6 +81,8 @@ public class UserController {
         ComplexResult result = FluentValidator.checkAll(new Class<?>[]
                 {userDTO.getId()==null?AddGroup.class:UpdateGroup.class})
                 .failOver()
+                .putAttribute2Context("userService", userService)
+                .on(userDTO.getUsername(),new UniqueUsernameValidator())
                 .on(userDTO, new HibernateSupportedValidator<UserDTO>().setHiberanteValidator(validator()))
                 .doValidate()
                 .result(ResultCollectors.toComplex());

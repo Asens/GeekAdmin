@@ -55,7 +55,7 @@ public class UserController {
     /**
      * 用户列表
      */
-    @Auth(value = "system.menu.list")
+    @Auth(value = "system.user.list")
     @GetMapping("/list")
     public Object list(@RequestParam(required = false , defaultValue = "1") Integer pageNo) {
         IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, 10));
@@ -65,6 +65,7 @@ public class UserController {
     /**
      * 用户编辑
      */
+    @Auth(value = "system.user.edit")
     @GetMapping("/edit")
     public Object edit(@RequestParam Long id) {
         return Result.success("result", userService.getById(id));
@@ -73,8 +74,9 @@ public class UserController {
     /**
      * 保存用户
      */
+    @Auth(value = {"system.user.save"})
     @PostMapping("/save")
-    public Object doAuth(UserDTO userDTO) {
+    public Object save(UserDTO userDTO) {
         ComplexResult result = FluentValidator.checkAll(new Class<?>[]
                 {userDTO.getId()==null?AddGroup.class:UpdateGroup.class})
                 .failOver()

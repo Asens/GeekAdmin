@@ -2,6 +2,7 @@ package com.geekutil.modules.sys.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.geekutil.Const;
+import com.geekutil.common.auth.AuthService;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.entity.Role;
 import com.geekutil.modules.sys.entity.RolePermission;
@@ -38,6 +39,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Resource
     private RolePermissionService rolePermissionService;
 
+    @Resource
+    private AuthService authService;
+
     @Override
     public List<Long> getListByUser(Long userId) {
         return roleMapper.getListByUser(userId);
@@ -58,6 +62,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
             role = updateDTO(roleDTO);
             rolePermissionService.remove(new QueryWrapper<RolePermission>().lambda()
                     .eq(RolePermission::getRoleId,roleDTO.getId()));
+            authService.removeRole(role.getCode());
         }
 
         List<Permission> permissionList = permissionService.lambdaQuery()

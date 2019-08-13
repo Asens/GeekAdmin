@@ -8,26 +8,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import javax.naming.NoPermissionException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 全局的异常拦截器
  * @author Asens
  */
 @ControllerAdvice
-@Order(-1)
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(NoPermissionException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public Object notFount(NoPermissionException e) {
-        return Result.error("没有权限");
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public Object notFount(RuntimeException e) {
-        return Result.error("服务异常");
+    public Object noPermission(HttpServletRequest request, Exception e) {
+        return Result.error("没有对应的数据/接口权限,请联系管理员");
     }
 }

@@ -3,6 +3,8 @@ package com.geekutil.modules.sys.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.geekutil.Const;
+import com.geekutil.common.auth.Auth;
+import com.geekutil.common.auth.AuthService;
 import com.geekutil.modules.sys.entity.User;
 import com.geekutil.modules.sys.entity.UserRole;
 import com.geekutil.modules.sys.entity.dto.UserDTO;
@@ -38,6 +40,8 @@ import static com.geekutil.Const.DATABASE_INTEGER_NO;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     @Resource
     private UserRoleService userRoleService;
+    @Resource
+    private AuthService authService;
 
     @Override
     public String createToken(Long userId) {
@@ -113,7 +117,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public void doAuth(Long id, Long[] roles) {
         userRoleService.remove(new QueryWrapper<UserRole>().lambda()
                 .eq(UserRole::getUserId,id));
-
+        authService.removeUser(id);
         List<UserRole> userRoleList = new ArrayList<>();
         for(Long roleId : roles){
             UserRole userRole = new UserRole();

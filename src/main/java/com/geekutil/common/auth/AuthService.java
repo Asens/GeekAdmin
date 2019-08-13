@@ -66,11 +66,11 @@ public class AuthService {
         return userRoleMap.get(userId);
     }
 
-    private void removeUser(Long userId){
+    public void removeUser(Long userId){
         userRoleMap.remove(userId);
     }
 
-    private void removeRole(String roleCode){
+    public void removeRole(String roleCode){
         rolePermissionMap.remove(roleCode);
     }
 }

@@ -59,8 +59,6 @@ public class PermissionController {
      * 找出有子节点且子节点全是功能按钮的
      * 要依次按照顺序，从最顶级开始
      *
-     * 有子菜单不允许创建子按钮
-     * 有子按钮不允许创建子菜单
      *
      * 有的从来都不是菜单本身的权限，而是操作数据的权限
      * 只是我可以不让你看见而已
@@ -96,6 +94,8 @@ public class PermissionController {
 
     /**
      * 保存权限
+     * 有子菜单不允许创建子按钮
+     * 有子按钮不允许创建子菜单
      */
     @PostMapping("/save")
     public Object save(Permission permission){

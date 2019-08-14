@@ -3,7 +3,6 @@ package com.geekutil.modules.sys.entity.dto;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 

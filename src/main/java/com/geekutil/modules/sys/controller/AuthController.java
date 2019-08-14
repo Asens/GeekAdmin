@@ -7,7 +7,6 @@ import com.geekutil.common.util.FrontUtils;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.entity.User;
-import com.geekutil.modules.sys.entity.vo.PermissionVO;
 import com.geekutil.modules.sys.entity.vo.UserVo;
 import com.geekutil.modules.sys.service.PermissionService;
 import com.geekutil.modules.sys.service.RoleService;
@@ -133,10 +132,10 @@ public class AuthController {
         List<Permission> permissionList = permissionService.getListByRoleIds(roleList);
         JSONObject role = new JSONObject();
         role.put("permissions", permissionList.stream().map(t -> {
-            PermissionVO permissionVO = new PermissionVO();
-            permissionVO.setPermissionId(t.getCode());
-            permissionVO.setPermissionName(t.getName());
-            return permissionVO;
+            JSONObject o = new JSONObject();
+            o.put("permissionId",t.getCode());
+            o.put("permissionName",t.getName());
+            return o;
         }).collect(toList()));
         userVo.setRole(role);
         return Result.success("result", userVo);

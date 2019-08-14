@@ -7,7 +7,7 @@ import com.geekutil.common.util.FrontUtils;
 import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.Permission;
 import com.geekutil.modules.sys.entity.User;
-import com.geekutil.modules.sys.entity.vo.UserVo;
+import com.geekutil.modules.sys.entity.dto.UserDTO;
 import com.geekutil.modules.sys.service.PermissionService;
 import com.geekutil.modules.sys.service.RoleService;
 import com.geekutil.modules.sys.service.UserService;
@@ -57,7 +57,10 @@ public class AuthController {
         User user = userService.findByUsername(username);
         if (user != null && userService.checkPassword(user, password)) {
             String token = userService.createToken(user.getId());
-            return Result.success("result", userVo(user, token));
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(user, userDTO, "password");
+            userDTO.setToken(token);
+            return Result.success("result", userDTO);
         }
         return Result.error();
     }
@@ -125,8 +128,8 @@ public class AuthController {
         if (user == null) {
             return Result.error();
         }
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user, userVo, "password");
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO, "password");
         List<Long> roleList = roleService.getListByUser(userId);
 
         List<Permission> permissionList = permissionService.getListByRoleIds(roleList);
@@ -137,14 +140,7 @@ public class AuthController {
             o.put("permissionName",t.getName());
             return o;
         }).collect(toList()));
-        userVo.setRole(role);
-        return Result.success("result", userVo);
-    }
-
-    private Object userVo(User user, String token) {
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(user, userVo, "password");
-        userVo.setToken(token);
-        return userVo;
+        userDTO.setRole(role);
+        return Result.success("result", userDTO);
     }
 }

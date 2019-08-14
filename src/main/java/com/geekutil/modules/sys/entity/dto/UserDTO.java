@@ -1,5 +1,6 @@
 package com.geekutil.modules.sys.entity.dto;
 
+import com.alibaba.fastjson.JSONObject;
 import com.geekutil.common.validate.group.AddGroup;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -39,4 +40,8 @@ public class UserDTO {
 
     @NotNull(message = "状态不能为空")
     private Integer status;
+
+    private String token;
+
+    private JSONObject role;
 }

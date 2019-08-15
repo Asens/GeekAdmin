@@ -27,7 +27,7 @@ public class PermissionDTO{
 
     @NotEmpty(message = "菜单名不能为空")
     @Length(min = 1, max = 20,message = "菜单名最小长度1,最大长度20")
-    @Pattern(regexp = "[0-9a-zA-Z\4e00-\u9fa5]+",message = "菜单名包含不支持的字符")
+    @Pattern(regexp = "[0-9a-zA-Z\u4e00-\u9fa5]+",message = "菜单名包含不支持的字符")
     private String name;
 
     @NotEmpty(message = "菜单编码不能为空")

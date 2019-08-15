@@ -16,7 +16,7 @@ public class RoleDTO {
 
     @NotEmpty(message = "角色名不能为空")
     @Length(min = 1, max = 20,message = "角色名最小长度1,最大长度20")
-    @Pattern(regexp = "[0-9a-zA-Z\4e00-\u9fa5]+",message = "角色名包含不支持的字符")
+    @Pattern(regexp = "[0-9a-zA-Z\u4e00-\u9fa5]+",message = "角色名包含不支持的字符")
     private String name;
 
     @Length(max = 100,message = "角色描述最大长度100")

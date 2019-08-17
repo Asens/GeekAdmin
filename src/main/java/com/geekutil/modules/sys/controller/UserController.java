@@ -123,4 +123,5 @@ public class UserController {
         userService.doAuth(id,roles);
         return Result.success();
     }
+
 }

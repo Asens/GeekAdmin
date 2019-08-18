@@ -18,14 +18,13 @@ import javax.validation.constraints.Pattern;
 public class UserDTO {
     private Long id;
 
-    @NotEmpty(message = "用户名不能为空")
+    @NotEmpty(message = "用户名不能为空", groups = AddGroup.class)
     @Length(min = 2, max = 20,message = "用户名最小长度2,最大长度20")
     @Pattern(regexp = "[0-9a-zA-Z\u4e00-\u9fa5]+",message = "用户名包含不支持的字符")
     private String username;
 
     @NotEmpty(message = "密码不能为空" , groups = AddGroup.class)
     @Length(min = 1, max = 20,message = "密码最小长度6,最大长度20")
-    @Pattern(regexp = "[0-9a-zA-Z]+",message = "密码包含不支持的字符")
     private String password;
 
     @Length(min = 2, max = 20,message = "昵称最小长度2,最大长度20")

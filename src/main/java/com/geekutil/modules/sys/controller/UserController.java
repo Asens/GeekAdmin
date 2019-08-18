@@ -10,7 +10,9 @@ import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.geekutil.Const;
 import com.geekutil.common.auth.Auth;
+import com.geekutil.common.util.FrontUtils;
 import com.geekutil.common.util.Result;
 import com.geekutil.common.validate.UniqueUsernameValidator;
 import com.geekutil.common.validate.ValidateUtils;
@@ -24,6 +26,7 @@ import com.geekutil.modules.sys.service.RoleService;
 import com.geekutil.modules.sys.service.UserRoleService;
 import com.geekutil.modules.sys.service.UserService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -121,6 +124,39 @@ public class UserController {
     @PostMapping("/doAuth")
     public Object doAuth(@RequestParam Long id,Long[] roles) {
         userService.doAuth(id,roles);
+        return Result.success();
+    }
+
+    @GetMapping("/checkPassword")
+    public Object checkPassword(@RequestParam String password) {
+        Long userId = FrontUtils.getCurrentUserId();
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.error();
+        }
+        if(!Objects.equals(DigestUtils.md5DigestAsHex((password +
+                Const.USER_SALT).getBytes()),user.getPassword())){
+            return Result.error("原密码错误");
+        }
+        return Result.success();
+    }
+    /**
+     * 修改密码
+     */
+    @PostMapping("/changePassword")
+    public Object changePassword(@RequestParam String oldPassword,@RequestParam String password) {
+        Long userId = FrontUtils.getCurrentUserId();
+        User user = userService.getById(userId);
+        if (user == null) {
+            return Result.error();
+        }
+        if(!Objects.equals(DigestUtils.md5DigestAsHex((oldPassword +
+                Const.USER_SALT).getBytes()),user.getPassword())){
+            return Result.error("原密码错误");
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex((password +
+                Const.USER_SALT).getBytes()));
+        userService.updateById(user);
         return Result.success();
     }
 

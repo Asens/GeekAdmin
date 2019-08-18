@@ -18,6 +18,10 @@ public class UniqueUsernameValidator extends ValidatorHandler<Object> implements
 
     @Override
     public boolean validate(ValidatorContext context, Object t) {
+        //编辑时不传递,不校验
+        if(t==null){
+            return true;
+        }
         UserService userService = (UserService)context.getAttribute("userService");
         int count = userService.lambdaQuery().eq(User::getUsername,t.toString()).count();
         if(count>=1){

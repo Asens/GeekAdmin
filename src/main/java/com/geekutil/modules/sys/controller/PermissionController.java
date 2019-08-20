@@ -50,7 +50,7 @@ public class PermissionController {
     @GetMapping("/menuTree")
     public Object menuTree(){
         List<Permission> result = permissionService.menuTree();
-        return Result.success("result",result);
+        return Result.success("data",result);
     }
 
     /**
@@ -89,7 +89,7 @@ public class PermissionController {
             result.add(o);
         }
 
-        return Result.success("result",result);
+        return Result.success("data",result);
     }
 
     /**
@@ -118,7 +118,7 @@ public class PermissionController {
     public Object info(@RequestParam("code") String code){
         Permission permission = permissionService.lambdaQuery()
                 .eq(Permission::getCode,code).one();
-        return Result.success("result",permission);
+        return Result.success("data",permission);
     }
 
     /**
@@ -128,7 +128,7 @@ public class PermissionController {
     @GetMapping("/delete")
     public Object delete(@RequestParam("id") Long id){
         permissionService.delete(id);
-        return Result.success("result");
+        return Result.success("data");
     }
 
 }

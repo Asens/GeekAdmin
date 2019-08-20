@@ -23,6 +23,7 @@
         <jwt.version>0.7.0</jwt.version>
         <fastjson.version>1.2.44</fastjson.version>
         <fluent-validator.version>1.0.9</fluent-validator.version>
+        <quartz.version>2.3.0</quartz.version>
     </properties>
 
 
@@ -128,7 +129,21 @@
             <version>6.0.17.Final</version>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz-jobs</artifactId>
+            <version>${quartz.version}</version>
+        </dependency>
+        <!--定时任务需要依赖context模块-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
 
     </dependencies>
 

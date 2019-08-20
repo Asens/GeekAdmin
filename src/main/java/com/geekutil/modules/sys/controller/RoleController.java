@@ -75,7 +75,7 @@ public class RoleController {
             o.put("permissions",permissions);
             result.add(o);
         }
-        return Result.success("result",result);
+        return Result.success("data",result);
     }
 
     /**
@@ -93,6 +93,6 @@ public class RoleController {
     @GetMapping("/delete")
     public Object delete(@RequestParam Long id){
         roleService.deleteRole(id);
-        return Result.success("result");
+        return Result.success("data");
     }
 }

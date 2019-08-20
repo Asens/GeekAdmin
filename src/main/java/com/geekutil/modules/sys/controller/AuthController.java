@@ -63,7 +63,7 @@ public class AuthController {
         index.put("children", menus(rootList,permissionList));
         JSONArray menus = new JSONArray();
         menus.add(index);
-        return Result.success("result", menus);
+        return Result.success("data", menus);
     }
 
     /**
@@ -115,6 +115,6 @@ public class AuthController {
             return o;
         }).collect(toList()));
         userDTO.setRole(role);
-        return Result.success("result", userDTO);
+        return Result.success("data", userDTO);
     }
 }

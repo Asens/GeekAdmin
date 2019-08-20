@@ -63,7 +63,7 @@ public class UserController {
     @GetMapping("/list")
     public Object list(@RequestParam(required = false , defaultValue = "1") Integer pageNo) {
         IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, 10));
-        return Result.success("result", pageResult(page));
+        return Result.success("data", pageResult(page));
     }
 
     /**
@@ -72,7 +72,7 @@ public class UserController {
     @Auth(value = "system.user.edit")
     @GetMapping("/edit")
     public Object edit(@RequestParam Long id) {
-        return Result.success("result", userService.getById(id));
+        return Result.success("data", userService.getById(id));
     }
 
     /**
@@ -115,7 +115,7 @@ public class UserController {
             o.put("checked",roleIdSet.contains(role.getId()));
             array.add(o);
         }
-        return Result.success("result", array);
+        return Result.success("data", array);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.geekutil.modules.front.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.geekutil.common.util.Result;
 import com.geekutil.modules.sys.entity.User;
 import com.geekutil.modules.sys.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,6 @@ public class IndexAct {
 
     @GetMapping("/")
     public Object index(){
-        User user = userService.getOne(new QueryWrapper<User>().lambda().eq(User::getUsername,"Asens"));
-        return user;
+        return Result.success();
     }
 }

@@ -15,6 +15,6 @@ public class OssController {
     public Object upload(@RequestParam("file") MultipartFile file) {
         //Fake interface
         return Result.success()
-                .result("https://img.asens.cn/images/note/1/as148668994644749.jpg");
+                .data("https://img.asens.cn/images/note/1/as148668994644749.jpg");
     }
 }

@@ -32,4 +32,8 @@ public class HttpUtils {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
+    public static int pageSize(){
+        return 10;
+    }
+
 }

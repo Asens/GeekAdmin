@@ -43,7 +43,7 @@ public class LoginController {
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO, "password");
             userDTO.setToken(token);
-            return Result.success("result", userDTO);
+            return Result.success("data", userDTO);
         }
         return Result.error();
     }

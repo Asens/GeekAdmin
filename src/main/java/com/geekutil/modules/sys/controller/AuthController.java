@@ -41,29 +41,6 @@ public class AuthController {
 
     private final static String PAGE_BASIC_LAY_OUT = "BasicLayout";
     private final static String PAGE_ROUTE_VIEW = "RouteView";
-    private final static String PAGE_VIEW = "PageView";
-
-    /**
-     * 登录接口
-     */
-    @PostMapping("/login")
-    public Object login(@RequestBody Map<String, String> paramMap) {
-        String username = paramMap.get("username");
-        String password = paramMap.get("password");
-        log.info("username : [{}], password:[{}]", username, password);
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            return Result.error();
-        }
-        User user = userService.findByUsername(username);
-        if (user != null && userService.checkPassword(user, password)) {
-            String token = userService.createToken(user.getId());
-            UserDTO userDTO = new UserDTO();
-            BeanUtils.copyProperties(user, userDTO, "password");
-            userDTO.setToken(token);
-            return Result.success("result", userDTO);
-        }
-        return Result.error();
-    }
 
     /**
      * 系统路由菜单,配合Vue动态路由

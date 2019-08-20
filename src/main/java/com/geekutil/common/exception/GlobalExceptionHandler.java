@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.naming.AuthenticationException;
 import javax.naming.NoPermissionException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -16,10 +18,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(NoPermissionException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     public Object noPermission(HttpServletRequest request, Exception e) {
         return Result.error("没有对应的数据/接口权限,请联系管理员");
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public Object notLogin(HttpServletRequest request, Exception e) {
+        return Result.error("用户未登录,请先登录");
     }
 }

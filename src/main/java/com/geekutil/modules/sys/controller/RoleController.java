@@ -75,7 +75,7 @@ public class RoleController {
             o.put("permissions",permissions);
             result.add(o);
         }
-        return Result.success("data",result);
+        return Result.success().data(result);
     }
 
     /**

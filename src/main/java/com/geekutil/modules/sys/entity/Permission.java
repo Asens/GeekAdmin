@@ -37,7 +37,7 @@ public class Permission extends Model<Permission> {
     private String component;
 
     @TableField("sort_num")
-    private String sortNum;
+    private Integer sortNum;
 
     @TableField("is_menu")
     private Integer isMenu;

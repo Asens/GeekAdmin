@@ -60,6 +60,6 @@ public class CenterController {
         User user = userService.getById(userId);
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO, "password");
-        return Result.success("data",userDTO);
+        return Result.success().data(userDTO);
     }
 }

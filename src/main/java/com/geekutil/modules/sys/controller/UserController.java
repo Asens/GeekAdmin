@@ -33,6 +33,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.*;
 
+import static com.geekutil.common.util.HttpUtils.pageSize;
 import static com.geekutil.common.util.PageUtils.pageResult;
 import static com.geekutil.common.validate.ValidateUtils.validator;
 import static java.util.stream.Collectors.toSet;
@@ -62,8 +63,8 @@ public class UserController {
     @Auth(value = "system.user.list")
     @GetMapping("/list")
     public Object list(@RequestParam(required = false , defaultValue = "1") Integer pageNo) {
-        IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, 10));
-        return Result.success("data", pageResult(page));
+        IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, pageSize()));
+        return Result.success().data(pageResult(page));
     }
 
     /**
@@ -72,7 +73,7 @@ public class UserController {
     @Auth(value = "system.user.edit")
     @GetMapping("/edit")
     public Object edit(@RequestParam Long id) {
-        return Result.success("data", userService.getById(id));
+        return Result.success().data(userService.getById(id));
     }
 
     /**
@@ -115,7 +116,7 @@ public class UserController {
             o.put("checked",roleIdSet.contains(role.getId()));
             array.add(o);
         }
-        return Result.success("data", array);
+        return Result.success().data(array);
     }
 
     /**

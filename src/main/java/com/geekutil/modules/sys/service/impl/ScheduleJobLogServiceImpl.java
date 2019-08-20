@@ -1,6 +1,8 @@
 package com.geekutil.modules.sys.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.geekutil.modules.sys.entity.ScheduleJobLog;
 import com.geekutil.modules.sys.service.ScheduleJobLogService;
@@ -19,8 +21,11 @@ public class ScheduleJobLogServiceImpl extends ServiceImpl<ScheduleJobLogMapper,
 
     @Override
     public IPage<ScheduleJobLog> page(Integer pageNo, int pageSize, Map<String, Object> paraMap) {
-        return null;
-        //TODO
-        //return page();
+        return lambdaQuery()
+                .eq(paraMap.containsKey("jobId"), ScheduleJobLog::getJobId,paraMap.get("jobId"))
+                .gt(paraMap.containsKey("start"), ScheduleJobLog::getJobId,paraMap.get("start"))
+                .lt(paraMap.containsKey("end"), ScheduleJobLog::getJobId,paraMap.get("end"))
+                .eq(paraMap.containsKey("status"), ScheduleJobLog::getJobId,paraMap.get("status"))
+                .page(new Page<>(pageNo,pageSize));
     }
 }

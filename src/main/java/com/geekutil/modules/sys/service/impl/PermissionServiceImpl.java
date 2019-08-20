@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
@@ -56,6 +57,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
     @Override
     public void addChildren(Permission permission,List<Permission> list) {
         List<Permission> children = getChildren(permission,list);
+        children.sort(Comparator.comparingInt(Permission::getSortNum));
         for(Permission c:children){
             c.setKey(c.getId());
             if(hasChild(c.getCode(),list)) {
@@ -129,6 +131,7 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         List<Permission> list = list();
         List<Permission> rootList = list.stream().filter(t-> StringUtils.isBlank(t.getParentCode()))
                 .collect(toList());
+        rootList.sort(Comparator.comparingInt(Permission::getSortNum));
         for(Permission permission:rootList){
             permission.setKey(permission.getId());
             if(hasChild(permission.getCode(),list)){

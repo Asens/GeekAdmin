@@ -10,7 +10,7 @@ public class Result extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
     private final static String STATUS = "status";
     private final static String MESSAGE = "message";
-    private final static String RESULT = "data";
+    private final static String DATA = "data";
     private final static String SUCCESS = "success";
     private final static String ERROR = "error";
 
@@ -49,7 +49,7 @@ public class Result extends HashMap<String, Object> {
     }
 
     public Result data(Object o) {
-        super.put(RESULT, o);
+        super.put(DATA, o);
         return this;
     }
 

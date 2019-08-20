@@ -20,7 +20,7 @@ import java.util.Map;
  */
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 @Log4j2
 public class LoginController {
     @Resource
@@ -43,7 +43,7 @@ public class LoginController {
             UserDTO userDTO = new UserDTO();
             BeanUtils.copyProperties(user, userDTO, "password");
             userDTO.setToken(token);
-            return Result.success("data", userDTO);
+            return Result.success().data(userDTO);
         }
         return Result.error();
     }

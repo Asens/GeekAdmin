@@ -72,7 +72,7 @@ public class ScheduleJobBean extends QuartzJobBean {
 			//任务执行总时长
 			long times = System.currentTimeMillis() - startTime;
 			jobLog.setTimes((int)times);
-			
+			jobLog.setEndDate(new Date());
 			//任务状态    0：成功    1：失败
 			jobLog.setStatus(1);
 			jobLog.setError(StringUtils.substring(e.toString(), 0, 2000));

@@ -102,9 +102,6 @@ public class AuthController {
         Long userId = FrontUtils.getCurrentUserId();
         log.info("info userId:[{}]", userId);
         User user = userService.getById(userId);
-        if (user == null) {
-            return Result.error();
-        }
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO, "password");
         List<Long> roleList = roleService.getListByUser(userId);

@@ -58,9 +58,6 @@ public class CenterController {
     public Object list() {
         Long userId = FrontUtils.getCurrentUserId();
         User user = userService.getById(userId);
-        if (user == null) {
-            return Result.error();
-        }
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO, "password");
         return Result.success("result",userDTO);

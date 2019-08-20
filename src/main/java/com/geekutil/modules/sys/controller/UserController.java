@@ -131,9 +131,6 @@ public class UserController {
     public Object checkPassword(@RequestParam String password) {
         Long userId = FrontUtils.getCurrentUserId();
         User user = userService.getById(userId);
-        if (user == null) {
-            return Result.error();
-        }
         if(!Objects.equals(DigestUtils.md5DigestAsHex((password +
                 Const.USER_SALT).getBytes()),user.getPassword())){
             return Result.error("原密码错误");
@@ -147,9 +144,6 @@ public class UserController {
     public Object changePassword(@RequestParam String oldPassword,@RequestParam String password) {
         Long userId = FrontUtils.getCurrentUserId();
         User user = userService.getById(userId);
-        if (user == null) {
-            return Result.error();
-        }
         if(!Objects.equals(DigestUtils.md5DigestAsHex((oldPassword +
                 Const.USER_SALT).getBytes()),user.getPassword())){
             return Result.error("原密码错误");

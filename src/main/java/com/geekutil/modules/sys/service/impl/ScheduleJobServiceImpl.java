@@ -75,10 +75,12 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
 			BeanUtils.copyProperties(scheduleJobDTO,scheduleJob);
 			scheduleJob.setCreateDate(new Date());
 			save(scheduleJob);
+			ScheduleUtil.createScheduleJob(scheduler, scheduleJob);
 			return;
 		}
 		ScheduleJob scheduleJob = getById(scheduleJobDTO.getId());
 		BeanUtils.copyProperties(scheduleJobDTO,scheduleJob,"id","createDate");
 		updateById(scheduleJob);
+		ScheduleUtil.updateScheduleJob(scheduler, scheduleJob);
 	}
 }

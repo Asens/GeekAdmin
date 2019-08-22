@@ -12,3 +12,8 @@ Geek Admin采用前后端分离的方式,当前项目为后端,前端为[Geek Ad
 
 #### 开发模式
 
+后端和前端推荐jetbrains的IDEA和WebStorm,下面分别以这两种工具进行介绍
+
+打开[Geek Admin](https://github.com/Asens/GeekAdmin)主页,选择Fork或是下载zip,然后导入IDEA
+
+Fork之后

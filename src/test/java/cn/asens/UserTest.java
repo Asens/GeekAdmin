@@ -30,7 +30,7 @@ import static com.geekutil.common.validate.ValidateUtils.validator;
 public class UserTest {
     @Test
     public void pwd() {
-        System.out.println(DigestUtils.md5DigestAsHex(("aaa" + Const.USER_SALT).getBytes()));
+        System.out.println(DigestUtils.md5DigestAsHex(("admin" + Const.USER_SALT).getBytes()));
     }
 
     @Test

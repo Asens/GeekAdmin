@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.geekutil.Const;
 import com.geekutil.common.auth.Auth;
+import com.geekutil.common.util.DateUtils;
 import com.geekutil.common.util.FrontUtils;
 import com.geekutil.common.util.Result;
 import com.geekutil.common.validate.UniqueUsernameValidator;
@@ -19,6 +20,7 @@ import com.geekutil.common.validate.ValidateUtils;
 import com.geekutil.common.validate.group.AddGroup;
 import com.geekutil.common.validate.group.UpdateGroup;
 import com.geekutil.modules.sys.entity.Role;
+import com.geekutil.modules.sys.entity.ScheduleJob;
 import com.geekutil.modules.sys.entity.User;
 import com.geekutil.modules.sys.entity.UserRole;
 import com.geekutil.modules.sys.entity.dto.UserDTO;
@@ -26,6 +28,8 @@ import com.geekutil.modules.sys.service.RoleService;
 import com.geekutil.modules.sys.service.UserRoleService;
 import com.geekutil.modules.sys.service.UserService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,8 +66,17 @@ public class UserController {
      */
     @Auth(value = "system.user.list")
     @GetMapping("/list")
-    public Object list(@RequestParam(required = false , defaultValue = "1") Integer pageNo) {
-        IPage<User> page = userService.lambdaQuery().page(new Page<>(pageNo, pageSize()));
+    public Object list(@RequestParam(required = false , defaultValue = "1") Integer pageNo,
+                       String username,String name,String status,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") Date registerTimeStart,
+                       @DateTimeFormat(pattern = "yyyy-MM-dd") Date registerTimeEnd) {
+        IPage<User> page = userService.lambdaQuery()
+                .eq(status!=null, User::getStatus,status)
+                .like(StringUtils.isNotBlank(name),User::getName,name)
+                .like(StringUtils.isNotBlank(username),User::getUsername,username)
+                .lt(registerTimeEnd!=null,User::getCreateDate, registerTimeEnd)
+                .gt(registerTimeStart!=null,User::getCreateDate,registerTimeStart)
+                .page(new Page<>(pageNo, pageSize()));
         return Result.success().data(pageResult(page));
     }
 

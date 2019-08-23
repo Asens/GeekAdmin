@@ -1,8 +1,11 @@
 package com.geekutil.modules.sys.task.schedule;
 
+import com.geekutil.common.util.ExceptionUtils;
 import com.geekutil.common.util.SpringContextHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -35,7 +38,8 @@ public class ScheduleRunnable implements Runnable {
 				method.invoke(target);
 			}
 		}catch (Exception e) {
-			//throw new RRException("执行定时任务失败", e);
+			throw new RuntimeException("执行定时任务失败:"+
+					ExceptionUtils.exceptionDetail(((InvocationTargetException) e).getTargetException()));
 		}
 	}
 

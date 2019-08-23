@@ -11,6 +11,7 @@ import com.geekutil.common.validate.ValidateUtils;
 import com.geekutil.modules.sys.entity.ScheduleJob;
 import com.geekutil.modules.sys.entity.dto.ScheduleJobDTO;
 import com.geekutil.modules.sys.service.ScheduleJobService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import static com.geekutil.common.util.HttpUtils.pageSize;
@@ -33,8 +34,14 @@ public class ScheduleJobController{
 	 * 定时任务列表
 	 */
 	@GetMapping("/list")
-	public Object list(@RequestParam(required = false, defaultValue = "1") Integer pageNo){
-		IPage<ScheduleJob> page = scheduleJobService.lambdaQuery().page(new Page<>(pageNo, pageSize()));
+	public Object list(@RequestParam(required = false, defaultValue = "1") Integer pageNo,
+					   Integer status, String remark, String beanName, String methodName){
+		IPage<ScheduleJob> page = scheduleJobService.lambdaQuery()
+				.eq(status!=null,ScheduleJob::getStatus,status)
+				.like(StringUtils.isNotBlank(remark),ScheduleJob::getRemark,remark)
+				.like(StringUtils.isNotBlank(beanName),ScheduleJob::getBeanName,beanName)
+				.like(StringUtils.isNotBlank(methodName),ScheduleJob::getMethodName,methodName)
+				.page(new Page<>(pageNo, pageSize()));
 		return Result.success().data(pageResult(page));
 	}
 

@@ -12,5 +12,9 @@ public class TestTask {
 
 	public void test(){
 		log.info("test方法，正在被执行");
+		if(1<2){
+			throw new IllegalStateException("asdad");
+		}
+		log.info("test方法，执行完成");
 	}
 }

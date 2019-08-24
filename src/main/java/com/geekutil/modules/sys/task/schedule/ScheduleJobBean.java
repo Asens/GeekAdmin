@@ -34,6 +34,7 @@ public class ScheduleJobBean extends QuartzJobBean {
 		ScheduleJobLog jobLog = new ScheduleJobLog();
         jobLog.setJobId(scheduleJob.getId());
         jobLog.setBeanName(scheduleJob.getBeanName());
+        jobLog.setRemark(scheduleJob.getRemark());
         jobLog.setMethodName(scheduleJob.getMethodName());
         jobLog.setParams(scheduleJob.getParams());
         jobLog.setCreateDate(new Date());
@@ -50,7 +51,7 @@ public class ScheduleJobBean extends QuartzJobBean {
 				task.run();
 				jobLog.setStatus(DATABASE_INTEGER_YES);
 			}catch (Throwable t){
-				jobLog.setError(StringUtils.substring(t.toString(), 0, 2000));
+				jobLog.setError(StringUtils.substring(t.toString(), 0, 1500));
 				jobLog.setStatus(DATABASE_INTEGER_NO);
 			}
 			
@@ -68,7 +69,7 @@ public class ScheduleJobBean extends QuartzJobBean {
 			jobLog.setTimes((int)times);
 			jobLog.setEndDate(new Date());
 			jobLog.setStatus(DATABASE_INTEGER_NO);
-			jobLog.setError(StringUtils.substring(e.toString(), 0, 2000));
+			jobLog.setError(StringUtils.substring(e.toString(), 0, 1500));
 		}finally {
 			scheduleJobLogService.save(jobLog);
 		}

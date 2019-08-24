@@ -40,6 +40,11 @@ public class ScheduleJobLog {
 	 */
 	@TableField("method_name")
 	private String methodName;
+
+	/**
+	 * 任务描述
+	 */
+	private String remark;
 	
 	/**
 	 * 参数

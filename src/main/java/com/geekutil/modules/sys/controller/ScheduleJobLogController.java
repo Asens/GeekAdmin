@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.geekutil.common.util.HttpUtils.pageSize;
@@ -62,6 +63,19 @@ public class ScheduleJobLogController {
 	@RequestMapping("/info")
 	public Object info(@RequestParam Long id){
 	    return Result.success().data(scheduleJobLogService.getById(id));
+	}
+
+	/**
+	 * 定时任务日志信息
+	 */
+	@RequestMapping("")
+	public Object logs(@RequestParam Long jobId){
+		List<ScheduleJobLog> logs = scheduleJobLogService.lambdaQuery()
+				.eq(ScheduleJobLog::getJobId,jobId)
+				.orderByDesc(ScheduleJobLog::getId)
+				.last("limit 10")
+				.list();
+		return Result.success().data(logs);
 	}
 
 

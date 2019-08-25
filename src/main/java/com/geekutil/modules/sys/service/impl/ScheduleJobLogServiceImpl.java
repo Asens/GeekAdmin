@@ -22,10 +22,14 @@ public class ScheduleJobLogServiceImpl extends ServiceImpl<ScheduleJobLogMapper,
     @Override
     public IPage<ScheduleJobLog> page(Integer pageNo, int pageSize, Map<String, Object> paraMap) {
         return lambdaQuery()
-                .eq(paraMap.containsKey("jobId"), ScheduleJobLog::getJobId,paraMap.get("jobId"))
-                .gt(paraMap.containsKey("start"), ScheduleJobLog::getJobId,paraMap.get("start"))
-                .lt(paraMap.containsKey("end"), ScheduleJobLog::getJobId,paraMap.get("end"))
-                .eq(paraMap.containsKey("status"), ScheduleJobLog::getJobId,paraMap.get("status"))
+                .eq(paraMap.containsKey("jobId") && paraMap.get("jobId")!=null,
+                        ScheduleJobLog::getJobId,paraMap.get("jobId"))
+                .gt(paraMap.containsKey("start") && paraMap.get("start")!=null,
+                        ScheduleJobLog::getJobId,paraMap.get("start"))
+                .lt(paraMap.containsKey("end") && paraMap.get("end")!=null,
+                        ScheduleJobLog::getJobId,paraMap.get("end"))
+                .eq(paraMap.containsKey("status") && paraMap.get("status")!=null,
+                        ScheduleJobLog::getJobId,paraMap.get("status"))
                 .page(new Page<>(pageNo,pageSize));
     }
 }

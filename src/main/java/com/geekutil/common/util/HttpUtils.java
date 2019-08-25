@@ -36,4 +36,11 @@ public class HttpUtils {
         return 10;
     }
 
+    public static int pageSize(Integer pageSize){
+        if(pageSize!=null){
+            return pageSize;
+        }
+        return 10;
+    }
+
 }

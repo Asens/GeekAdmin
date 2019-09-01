@@ -6,6 +6,7 @@ import com.baidu.unbiz.fluentvalidator.ResultCollectors;
 import com.baidu.unbiz.fluentvalidator.jsr303.HibernateSupportedValidator;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.geekutil.common.log.SystemLog;
 import com.geekutil.common.util.Result;
 import com.geekutil.common.validate.ValidateUtils;
 import com.geekutil.modules.sys.entity.ScheduleJob;
@@ -34,6 +35,7 @@ public class ScheduleJobController{
 	 * 定时任务列表
 	 */
 	@GetMapping("/list")
+	@SystemLog
 	public Object list(@RequestParam(required = false, defaultValue = "1") Integer pageNo,
 					   Integer status, String remark, String beanName, String methodName){
 		IPage<ScheduleJob> page = scheduleJobService.lambdaQuery()
@@ -49,6 +51,7 @@ public class ScheduleJobController{
 	 * 编辑定时任务
 	 */
 	@GetMapping("/edit")
+	@SystemLog(message = "定时任务 编辑")
 	public Object edit(@RequestParam Long id){
 		return Result.success().data(scheduleJobService.getById(id));
 	}

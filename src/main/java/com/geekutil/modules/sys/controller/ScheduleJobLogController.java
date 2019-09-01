@@ -41,8 +41,6 @@ public class ScheduleJobLogController {
 
 	@Resource
     private ScheduleJobLogService scheduleJobLogService;
-    @Resource
-    private ScheduleJobService scheduleJobService;
 
 	/**
 	 * 定时任务日志列表

@@ -38,5 +38,5 @@ public interface ScheduleJobService extends IService<ScheduleJob> {
 	 * 保存或更新
 	 * @param scheduleJobDTO 传入参数
 	 */
-	void saveOrUpdateUser(ScheduleJobDTO scheduleJobDTO);
+	void saveOrUpdateScheduleJob(ScheduleJobDTO scheduleJobDTO);
 }

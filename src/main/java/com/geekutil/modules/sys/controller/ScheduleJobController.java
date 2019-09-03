@@ -69,7 +69,7 @@ public class ScheduleJobController{
 		if(!result.isSuccess()){
 			return Result.error(ValidateUtils.getErrorMessage(result.getErrors()));
 		}
-		scheduleJobService.saveOrUpdateUser(scheduleJobDTO);
+		scheduleJobService.saveOrUpdateScheduleJob(scheduleJobDTO);
 		return Result.success();
 	}
 	

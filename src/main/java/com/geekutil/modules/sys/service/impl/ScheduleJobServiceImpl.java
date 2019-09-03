@@ -12,6 +12,7 @@ import com.geekutil.modules.sys.task.schedule.ScheduleUtil;
 import org.quartz.Scheduler;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
@@ -69,7 +70,8 @@ public class ScheduleJobServiceImpl extends ServiceImpl<ScheduleJobMapper, Sched
     }
 
 	@Override
-	public void saveOrUpdateUser(ScheduleJobDTO scheduleJobDTO) {
+	@Transactional(rollbackFor = Exception.class)
+	public void saveOrUpdateScheduleJob(ScheduleJobDTO scheduleJobDTO) {
 		if(scheduleJobDTO.getId() == null){
 			ScheduleJob scheduleJob = new ScheduleJob();
 			BeanUtils.copyProperties(scheduleJobDTO,scheduleJob);

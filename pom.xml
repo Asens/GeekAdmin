@@ -23,7 +23,7 @@
         <jwt.version>0.7.0</jwt.version>
         <fastjson.version>1.2.44</fastjson.version>
         <fluent-validator.version>1.0.9</fluent-validator.version>
-        <quartz.version>2.3.0</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
     </properties>
 
 
